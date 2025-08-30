@@ -1,0 +1,45 @@
+import trimesh
+
+parts = []
+
+# --------------------
+# Fuselage (main body)
+# --------------------
+fuselage = trimesh.creation.cylinder(radius=1.5, height=15, sections=64)
+fuselage.apply_translation([0, 0, 0])
+parts.append(fuselage)
+
+# --------------------
+# Wings
+# --------------------
+wing = trimesh.creation.box(extents=[25, 0.3, 2])
+wing.apply_translation([0, 0, 0])  # center
+parts.append(wing)
+
+# Tail horizontal stabilizer
+tail_wing = trimesh.creation.box(extents=[10, 0.2, 1])
+tail_wing.apply_translation([0, 0, -7])
+parts.append(tail_wing)
+
+# Tail vertical fin
+tail_fin = trimesh.creation.box(extents=[0.5, 4, 1])
+tail_fin.apply_translation([0, 2, -7])
+parts.append(tail_fin)
+
+# --------------------
+# Engines (4 cylinders under wings)
+# --------------------
+for x in [-8, 8]:      # left wing and right wing
+    for z in [-1, 1]:  # two engines each side
+        engine = trimesh.creation.cylinder(radius=0.7, height=2, sections=32)
+        engine.apply_translation([x, -1, z])
+        parts.append(engine)
+
+# --------------------
+# Combine everything
+# --------------------
+airbus = trimesh.util.concatenate(parts)
+
+# Export to OBJ
+airbus.export("airbus_a380.obj")
+print("✅ Airbus A380-style model exported as airbus_a380.obj")
